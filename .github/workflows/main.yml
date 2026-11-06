@@ -1,0 +1,27 @@
+name: Build 2far doblecupp VST3
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build-windows:
+    runs-on: windows-2022
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configure (CMake descarga JUCE)
+        run: cmake -B build -G "Visual Studio 17 2022" -A x64
+
+      - name: Build Release
+        run: cmake --build build --config Release --parallel
+
+      - name: Subir el VST3
+        uses: actions/upload-artifact@v4
+        with:
+          name: 2far-doblecupp-vst3
+          path: build/Doblecupp_artefacts/Release/VST3/
+          if-no-files-found: error
